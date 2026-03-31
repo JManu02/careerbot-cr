@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
-const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY
-
 function App() {
   const [messages, setMessages] = useState([
     { role: 'assistant', text: '¡Hola! Soy tu asistente. ¿En qué puedo ayudarte?' }
@@ -30,30 +28,21 @@ function App() {
         content: m.text
       }))
 
-      const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+      const response = await fetch('http://localhost:3001/api/chat', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${GROQ_API_KEY}`
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          model: 'llama-3.3-70b-versatile',
-          messages: [
-            { role: 'system', content: 'Eres un asistente útil y amigable. Responde siempre en español.' },
-            ...history
-          ]
-        })
+        body: JSON.stringify({ messages: history })
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        console.error('Error Groq:', data)
-        throw new Error(data.error?.message || 'Error desconocido')
+        throw new Error(data.error || 'Error del servidor')
       }
 
-      const botReply = data.choices[0].message.content
-      setMessages(prev => [...prev, { role: 'assistant', text: botReply }])
+      setMessages(prev => [...prev, { role: 'assistant', text: data.reply }])
     } catch (error) {
       console.error(error)
       setMessages(prev => [...prev, {
