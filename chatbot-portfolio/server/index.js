@@ -1,24 +1,10 @@
 import express from 'express'
 import cors from 'cors'
-import { readFileSync } from 'fs'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
 
-const __dirname = dirname(fileURLToPath(import.meta.url))
-
-// Leer el .env manualmente
-const envPath = join(__dirname, '.env')
-const envContent = readFileSync(envPath, 'utf-8')
-const GROQ_API_KEY = envContent
-  .split('\n')
-  .find(line => line.startsWith('GROQ_API_KEY='))
-  ?.split('=')[1]
-  ?.trim()
-
-console.log('API KEY cargada:', GROQ_API_KEY ? 'sí ✓' : 'no ✗')
+const GROQ_API_KEY = process.env.GROQ_API_KEY
 
 const app = express()
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 
 app.use(cors())
 app.use(express.json())
@@ -40,7 +26,8 @@ app.post('/api/chat', async (req, res) => {
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: systemPrompt || 'Eres un asistente útil y amigable. Responde siempre en español.' }, ...messages
+          { role: 'system', content: systemPrompt || 'Eres un asistente útil y amigable. Responde siempre en español.' },
+          ...messages
         ]
       })
     })
