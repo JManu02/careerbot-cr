@@ -1,2 +1,4 @@
+node_modules
 chatbot-portfolio/.env
 chatbot-portfolio/server/.env
+chatbot-portfolio/dist

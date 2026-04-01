@@ -24,7 +24,7 @@ app.use(cors())
 app.use(express.json())
 
 app.post('/api/chat', async (req, res) => {
-  const { messages } = req.body
+  const { messages, systemPrompt } = req.body
 
   if (!messages || !Array.isArray(messages)) {
     return res.status(400).json({ error: 'Mensajes inválidos' })
@@ -40,8 +40,7 @@ app.post('/api/chat', async (req, res) => {
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
         messages: [
-          { role: 'system', content: 'Eres un asistente útil y amigable. Responde siempre en español.' },
-          ...messages
+          { role: 'system', content: systemPrompt || 'Eres un asistente útil y amigable. Responde siempre en español.' }, ...messages
         ]
       })
     })
