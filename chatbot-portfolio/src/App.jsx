@@ -51,7 +51,7 @@ function App() {
         content: m.text
       }))
 
-      const response = await fetch('https://careerbot-cr-production.up.railway.app/api/chat', {
+      const response = await fetch('https://chatbot-cr.onrender.com/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
